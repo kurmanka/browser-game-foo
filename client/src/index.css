@@ -11,3 +11,36 @@ body {
 #food-search {
   margin-top: 5em;
 }
+
+#board {
+  height: 300px;
+  width: 300px;
+  background: #f4f4f4;
+  margin: 40px;
+  border: 1px solid #000;
+  display: table;
+  border-collapse: collapse;
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  align: center; 
+  vertical-align: center;
+}
+
+.row,
+.cell {
+  border: 1px solid #000;
+}
+
+.A {
+  background-color: #999;
+}
+
+.B {
+  background-color: #444; 
+}

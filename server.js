@@ -1,4 +1,6 @@
 const express = require("express");
+var bodyParser  = require('body-parser');
+
 const fs = require("fs");
 const sqlite = require("sql.js");
 
@@ -8,12 +10,60 @@ const db = new sqlite.Database(filebuffer);
 
 const app = express();
 
+var game = {
+  playerA: {},
+  playerB: {},
+  board: [
+    [' ','B',' '],
+    [' ',' ','A'],
+    [' ',' ',' '],
+  ],
+  status: "progress", // progress, done
+  player: "A"
+};
+
+
+
+
 app.set("port", process.env.PORT || 3001);
 
 // Express only serves static assets in production
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
+
+app.use(bodyParser.json());
+
+app.get("/api/game", (req, res) => {
+  res.json(game);
+});
+
+app.post("/api/move", (req, res) => {
+
+  var row = parseInt(req.body.row);
+  var col = parseInt(req.body.col);
+
+  if ( 
+      game.status === "progress" &&
+      game.player === req.body.user &&
+      game.board[row][col] === ' ' ) {
+
+    console.log( "Move!" );
+    game.board[row][col] = game.player;
+
+    if (game.player === "A") { game.player = "B"; }
+    else { game.player = "A"; }
+
+  } else {
+    console.log( "no move." );
+    console.log( JSON.stringify(game) );
+    console.log( JSON.stringify(req.body) );
+  }
+
+  res.json(game);
+});
+
+
 
 const COLUMNS = [
   "carbohydrate_g",
@@ -24,6 +74,8 @@ const COLUMNS = [
   "kcal",
   "description"
 ];
+
+
 app.get("/api/food", (req, res) => {
   const param = req.query.q;
 
